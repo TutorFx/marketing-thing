@@ -1,0 +1,99 @@
+<script setup lang="ts">
+import type { GoogleModelEnum } from '~~/utils/internal'
+import { Placeholder } from '@tiptap/extension-placeholder'
+import { Underline } from '@tiptap/extension-underline'
+import { StarterKit } from '@tiptap/starter-kit'
+import { EditorContent, useEditor } from '@tiptap/vue-3'
+
+const props = withDefaults(defineProps<{ placeholder?: string }>(), {
+  placeholder: 'Digite aqui...',
+})
+const emits = defineEmits(['triggers'])
+const model = defineModel<string>()
+const agentModel = defineModel<GoogleModelEnum>('agentModel')
+
+const editor = useEditor({
+  content: model.value,
+  editorProps: {
+    attributes: {
+      class: 'min-w-full prose text-neutral-300 focus:outline-none mx-auto min-6xl [--tw-prose-bold:theme(colors.neutral.300)] [--tw-prose-headings:theme(colors.neutral.300)]',
+    },
+  },
+  onUpdate: ({ editor }) => {
+    model.value = editor.getHTML()
+  },
+  extensions: [
+    StarterKit,
+    Placeholder.configure({
+      placeholder: props.placeholder,
+    }),
+    Underline,
+  ],
+})
+
+watch(model, (newValue) => {
+  if (editor.value && newValue && newValue !== editor.value.getHTML()) {
+    editor.value.commands.setContent(newValue, false, {
+      preserveWhitespace: 'full',
+    })
+  }
+})
+
+onBeforeUnmount(() => {
+  editor.value?.destroy()
+})
+</script>
+
+<template>
+  <UCard>
+    <template #header>
+      <div class="grid grid-flow-col justify-start items-center">
+        <div v-if="editor" class="pr-2 flex flex-wrap gap-1 border-r border-[var(--ui-border)]">
+          <UButton
+            size="xs"
+            icon="material-symbols:format-bold-rounded"
+            :variant="editor.isActive('bold') ? 'solid' : 'subtle'"
+            @click="editor.chain().focus().toggleBold().run()"
+          />
+          <UButton
+            v-for="heading in 5"
+            :key="`heading-${heading}`"
+            size="xs"
+            :icon="`material-symbols:format-h${heading}`"
+            :variant="editor.isActive('heading', { level: heading }) ? 'solid' : 'subtle'"
+            @click="editor.chain().focus().toggleHeading({ level: heading as 1 | 2 | 3 | 4 | 5 }).run()"
+          />
+          <UButton
+            size="xs"
+            icon="material-symbols:format-italic"
+            :variant="editor.isActive('italic') ? 'solid' : 'subtle'"
+            @click="editor.chain().focus().toggleItalic().run()"
+          />
+          <UButton
+            size="xs"
+            icon="material-symbols:format-underlined"
+            :variant="editor.isActive('underline') ? 'solid' : 'subtle'"
+            @click="editor.chain().focus().toggleUnderline().run()"
+          />
+        </div>
+        <div class="pl-2 flex flex-wrap gap-1">
+          <UButton size="xs" icon="tdesign:emo-emotional" @click="emits('triggers')">
+            Neutralizar
+          </UButton>
+          <CoreAgentSelector v-model="agentModel" />
+        </div>
+      </div>
+    </template>
+    <EditorContent :editor="editor" />
+  </UCard>
+</template>
+
+<style>
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}
+</style>
