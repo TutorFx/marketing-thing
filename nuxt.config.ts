@@ -4,13 +4,24 @@ import process from 'node:process'
 
 export default defineNuxtConfig({
 
-  modules: ['@nuxtjs/mdc', '@nuxt/eslint', '@pinia/nuxt', '@nuxt/ui'],
+  modules: [
+    '@nuxtjs/mdc',
+    '@nuxt/eslint',
+    '@pinia/nuxt',
+    '@nuxt/ui',
+    'nuxt-auth-utils',
+  ],
+
   devtools: { enabled: true },
 
   css: ['./public/tailwind.css'],
 
   runtimeConfig: {
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    google: {
+      clientId: process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID,
+      clientSecret: process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET,
+    },
   },
 
   future: {

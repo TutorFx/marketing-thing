@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { fromZodError } from 'zod-validation-error'
-import { AiSugestionRequest } from '~~/utils/schemas'
+import { AiSugestionRequest } from '~~/shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {
   const result = await readValidatedBody(event, (body) => {
@@ -12,9 +12,10 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig()
   const agent = GOOGLE_MODELS[result.data.agent]
+  const prompt = PROMPTS[result.data.prompt]
 
   const genAI = new GoogleGenerativeAI(config.GEMINI_API_KEY)
-  const model = genAI.getGenerativeModel({ model: agent.name, systemInstruction: await getPromptFileData('EmotinalTriggers') })
+  const model = genAI.getGenerativeModel({ model: agent.name, systemInstruction: await getPromptFileData(prompt) })
 
   const chat = model.startChat({
     generationConfig: GOOGLE_GENERATION_SETTINGS,

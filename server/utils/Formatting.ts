@@ -1,6 +1,6 @@
 // @ts-expect-error - Replace in soon future
 import safeEval from 'safe-eval'
-import { AiSugestionResponses } from '~~/utils/schemas'
+import { AiSugestionResponses } from '~~/shared/utils/schemas'
 
 export function extractContent(originalText: string, firstMatch: string, lastMatch: string) {
   const startIndex = originalText.indexOf(firstMatch)

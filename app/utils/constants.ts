@@ -1,4 +1,4 @@
-import { GoogleModelEnum } from '../../utils/internal'
+import { GoogleModelEnum, PromptEnum } from '../../shared/utils/internal'
 
 export const MODELS = [
   {
@@ -15,5 +15,20 @@ export const MODELS = [
     name: 'Rápido',
     isPro: false,
     id: GoogleModelEnum.flash,
+  },
+] as const
+
+export const PROMPTS = [
+  {
+    name: 'Neutralizar',
+    isPro: false,
+    id: PromptEnum.EmotinalTriggers,
+    icon: 'tdesign:emo-emotional',
+  },
+  {
+    name: 'Corrigir',
+    isPro: false,
+    id: PromptEnum.Correction,
+    icon: 'fluent:autocorrect-20-filled',
   },
 ] as const

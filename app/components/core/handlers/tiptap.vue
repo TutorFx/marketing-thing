@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GoogleModelEnum } from '~~/utils/internal'
+import type { GoogleModelEnum, PromptEnum } from '~~/shared/utils/internal'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Underline } from '@tiptap/extension-underline'
 import { StarterKit } from '@tiptap/starter-kit'
@@ -8,7 +8,9 @@ import { EditorContent, useEditor } from '@tiptap/vue-3'
 const props = withDefaults(defineProps<{ placeholder?: string }>(), {
   placeholder: 'Digite aqui...',
 })
-const emits = defineEmits(['triggers'])
+const emits = defineEmits<{
+  (e: 'triggers', value: PromptEnum): void
+}>()
 const model = defineModel<string>()
 const agentModel = defineModel<GoogleModelEnum>('agentModel')
 
@@ -56,14 +58,6 @@ onBeforeUnmount(() => {
             @click="editor.chain().focus().toggleBold().run()"
           />
           <UButton
-            v-for="heading in 5"
-            :key="`heading-${heading}`"
-            size="xs"
-            :icon="`material-symbols:format-h${heading}`"
-            :variant="editor.isActive('heading', { level: heading }) ? 'solid' : 'subtle'"
-            @click="editor.chain().focus().toggleHeading({ level: heading as 1 | 2 | 3 | 4 | 5 }).run()"
-          />
-          <UButton
             size="xs"
             icon="material-symbols:format-italic"
             :variant="editor.isActive('italic') ? 'solid' : 'subtle'"
@@ -75,10 +69,18 @@ onBeforeUnmount(() => {
             :variant="editor.isActive('underline') ? 'solid' : 'subtle'"
             @click="editor.chain().focus().toggleUnderline().run()"
           />
+          <UButton
+            v-for="heading in 5"
+            :key="`heading-${heading}`"
+            size="xs"
+            :icon="`material-symbols:format-h${heading}`"
+            :variant="editor.isActive('heading', { level: heading }) ? 'solid' : 'subtle'"
+            @click="editor.chain().focus().toggleHeading({ level: heading as 1 | 2 | 3 | 4 | 5 }).run()"
+          />
         </div>
         <div class="pl-2 flex flex-wrap gap-1">
-          <UButton size="xs" icon="tdesign:emo-emotional" @click="emits('triggers')">
-            Neutralizar
+          <UButton v-for="({ icon, id, name, isPro }, i) in PROMPTS" :key="i" size="xs" :icon @click="emits('triggers', id)">
+            {{ name }} <Icon v-if="isPro" name="solar:medal-ribbon-star-bold-duotone" />
           </UButton>
           <CoreAgentSelector v-model="agentModel" />
         </div>

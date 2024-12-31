@@ -1,7 +1,9 @@
-import type { IAiSugestionRequest, IAiSugestionResponse, IAiSugestionResponses } from '~~/utils/schemas'
-import { diff, diffCharsToLines, diffCleanupSemantic, diffLinesToChars, diffMain, diffPrettyHtml, patchApply, patchMake } from 'diff-match-patch-es'
+import type { PromptEnum } from '~~/shared/utils/internal'
+import type { IAiSugestionRequest, IAiSugestionResponse, IAiSugestionResponses } from '~~/shared/utils/schemas'
+import { watchDebounced } from '@vueuse/core'
+import { diffCleanupSemantic, diffMain } from 'diff-match-patch-es'
 import { defineStore } from 'pinia'
-import { GoogleModelEnum } from '~~/utils/internal'
+import { GoogleModelEnum } from '~~/shared/utils/internal'
 
 export const useTextEditor = defineStore('text-editor', () => {
   const defaultVal = '<p></p>'
@@ -24,9 +26,11 @@ export const useTextEditor = defineStore('text-editor', () => {
     if (!currentTip)
       return null
 
+    const diff = state.value.replaceAll(currentTip.diff.before, currentTip.diff.after)
+
     const diffs = diffMain(
       state.value.replace(/<[^>]*>/g, ''),
-      currentTip.diff.replace(/<[^>]*>/g, ''),
+      diff.replace(/<[^>]*>/g, ''),
     )
 
     // diffCharsToLines(diffs, lineArray)
@@ -35,17 +39,35 @@ export const useTextEditor = defineStore('text-editor', () => {
     return diffs
   })
 
-  watch(state, () => tips.value.length = 0)
+  // watch(state, () => tips.value.length = 0)
 
-  function fetchTips() {
-    $fetch<IAiSugestionResponses>('/api/v1/LookForTriggers', {
+  watchDebounced(
+    state,
+    (currentState) => {
+      tips.value.forEach((item, index) => {
+        if (!currentState.includes(item.diff.before)) {
+          tips.value.splice(index, 1)
+        }
+      })
+    },
+    { debounce: 500, maxWait: 1000 },
+  )
+
+  function fetchTips(prompt: PromptEnum) {
+    $fetch<IAiSugestionResponses>('/api/v1/Tips', {
       method: 'POST',
       body: {
         redaction: state.value,
         agent: agent.value,
+        prompt,
       } satisfies IAiSugestionRequest,
     })
       .then(res => res.forEach(item => tips.value.push({ ...item, initial: state.value })))
+  }
+
+  function refuseTip(index: number) {
+    isHovering.value = null
+    tips.value.splice(index, 1)
   }
 
   function applyTip(index: number) {
@@ -58,30 +80,8 @@ export const useTextEditor = defineStore('text-editor', () => {
     if (!currentTip)
       return
 
-    const diffs = patchMake(state.value, currentTip.diff)
-    const patches = patchApply(diffs, state.value)
-
-    const patch = patches[0]
-    if (typeof patch !== 'string')
-      return
-
-    tips.value = tips.value.map((tip) => {
-      const diffs = patchMake(patch, tip.diff)
-      const patches = patchApply(diffs, tip.diff, { matchThreshold: 0.7 })
-
-      const repatch = patches[0]
-
-      if (typeof repatch !== 'string')
-        return tip
-
-      return {
-        ...tip,
-        diff: repatch,
-      }
-    })
-
-    setText(patch)
+    setText(state.value.replaceAll(currentTip.diff.before, currentTip.diff.after))
   }
 
-  return { state, diffData, fetchTips, applyTip, setText, tips, isHovering, agent }
+  return { state, diffData, fetchTips, applyTip, refuseTip, setText, tips, isHovering, agent }
 })

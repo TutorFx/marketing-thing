@@ -1,4 +1,4 @@
-import { GoogleModelEnum } from '../../utils/internal'
+import { GoogleModelEnum, PromptEnum } from '../../shared/utils/internal'
 
 export const GOOGLE_MODELS = {
   [GoogleModelEnum.thinking]: {
@@ -13,4 +13,9 @@ export const GOOGLE_MODELS = {
     name: 'gemini-2.0-flash-exp',
     contentIndex: 0,
   },
+} as const
+
+export const PROMPTS = {
+  [PromptEnum.Correction]: 'Correction',
+  [PromptEnum.EmotinalTriggers]: 'EmotinalTriggers',
 } as const
