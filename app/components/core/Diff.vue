@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type Diff, DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, type DiffOperation } from 'diff-match-patch-es'
 
-defineProps<{ data: Diff[] }>()
+const props = defineProps<{ data: Diff[] }>()
 
 function getColor(color: DiffOperation) {
   switch (color) {
@@ -16,12 +16,20 @@ function getColor(color: DiffOperation) {
     }
   }
 }
+
+const html = computed(() => {
+  let text = ''
+
+  for (const item of props.data) {
+    text += `<span class="${getColor(item[0])}">${item[1]}</span>`
+  }
+
+  return text
+})
 </script>
 
 <template>
   <div>
-    <span v-for="(item, i) in data" :key="i" :class="`${getColor(item[0])}`">
-      {{ item[1] }}
-    </span>
+    <div class="min-w-full prose text-neutral-300 focus:outline-none mx-auto min-6xl [--tw-prose-bold:theme(colors.neutral.300)] [--tw-prose-headings:theme(colors.neutral.300)]" v-html="html" />
   </div>
 </template>

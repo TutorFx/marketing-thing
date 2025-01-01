@@ -8,9 +8,11 @@ import { EditorContent, useEditor } from '@tiptap/vue-3'
 const props = withDefaults(defineProps<{ placeholder?: string }>(), {
   placeholder: 'Digite aqui...',
 })
+
 const emits = defineEmits<{
   (e: 'triggers', value: PromptEnum): void
 }>()
+
 const model = defineModel<string>()
 const agentModel = defineModel<GoogleModelEnum>('agentModel')
 
@@ -47,7 +49,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <UCard>
+  <UCard :ui="{ body: 'min-h-full' }">
     <template #header>
       <div class="grid grid-flow-col justify-start items-center">
         <div v-if="editor" class="pr-2 flex flex-wrap gap-1 border-r border-[var(--ui-border)]">

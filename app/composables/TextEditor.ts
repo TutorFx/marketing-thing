@@ -29,8 +29,8 @@ export const useTextEditor = defineStore('text-editor', () => {
     const diff = state.value.replaceAll(currentTip.diff.before, currentTip.diff.after)
 
     const diffs = diffMain(
-      state.value.replace(/<[^>]*>/g, ''),
-      diff.replace(/<[^>]*>/g, ''),
+      state.value, // .replace(/<[^>]*>/g, ''),
+      diff, // .replace(/<[^>]*>/g, ''),
     )
 
     // diffCharsToLines(diffs, lineArray)
@@ -43,15 +43,17 @@ export const useTextEditor = defineStore('text-editor', () => {
 
   watchDebounced(
     state,
-    (currentState) => {
-      tips.value.forEach((item, index) => {
-        if (!currentState.includes(item.diff.before)) {
-          tips.value.splice(index, 1)
-        }
-      })
-    },
+    removeImpossibleTips,
     { debounce: 500, maxWait: 1000 },
   )
+
+  function removeImpossibleTips(currentState: string) {
+    tips.value.forEach((item, index) => {
+      if (!currentState.includes(item.diff.before)) {
+        tips.value.splice(index, 1)
+      }
+    })
+  }
 
   function fetchTips(prompt: PromptEnum) {
     $fetch<IAiSugestionResponses>('/api/v1/Tips', {
@@ -62,7 +64,11 @@ export const useTextEditor = defineStore('text-editor', () => {
         prompt,
       } satisfies IAiSugestionRequest,
     })
-      .then(res => res.forEach(item => tips.value.push({ ...item, initial: state.value })))
+      .then((res) => {
+        const localTips = res.forEach(item => tips.value.push({ ...item, initial: state.value }))
+        removeImpossibleTips(state.value)
+        return localTips
+      })
   }
 
   function refuseTip(index: number) {
