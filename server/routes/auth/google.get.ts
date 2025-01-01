@@ -2,7 +2,9 @@ export default defineOAuthGoogleEventHandler({
   config: {},
   async onSuccess(event, { user }) {
     const prisma = usePrisma()
-    await prisma.user.upsert({
+    const network = readVercelHeaders(event)
+
+    const definedUser = await prisma.user.upsert({
       where: {
         email: user.email,
       },
@@ -10,21 +12,25 @@ export default defineOAuthGoogleEventHandler({
         picture: user.picture,
         firstname: user.given_name,
         lastname: user.family_name,
+        connections: defineUserConnectionsData(network.ip),
       },
       create: {
         email: user.email,
         picture: user.picture,
         firstname: user.given_name,
         lastname: user.family_name,
+        connections: defineUserConnectionsData(network.ip),
       },
     })
     await setUserSession(event, {
       user: {
-        name: user.name,
+        name: user.given_name,
         picture: user.picture,
         email: user.email,
+        id: definedUser.id,
       },
     })
+
     return sendRedirect(event, '/')
   },
   // Optional, will return a json error and 401 status code by default

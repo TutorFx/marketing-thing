@@ -2,6 +2,7 @@ import { RegisterSchema } from '~~/shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(event, RegisterSchema.safeParse)
+  const network = readVercelHeaders(event)
 
   if (body.success === false) {
     return sendError(
@@ -20,13 +21,18 @@ export default defineEventHandler(async (event) => {
     data: {
       email: body.data.email,
       password: hash,
+
+      connections: defineUserConnectionsData(network.ip),
     },
   })
 
   await setUserSession(event, {
     // User data
     user: {
+      name: user.firstname,
       email: user.email,
+      id: user.id,
+      picture: user.picture,
     },
     // Any extra fields for the session data
     loggedInAt: new Date(),

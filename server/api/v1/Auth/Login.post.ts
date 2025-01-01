@@ -2,6 +2,7 @@ import { LoginSchema } from '~~/shared/utils/schemas'
 
 export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(event, LoginSchema.safeParse)
+  const network = readVercelHeaders(event)
 
   if (body.success === false) {
     return sendError(
@@ -43,14 +44,20 @@ export default defineEventHandler(async (event) => {
     )
   }
 
-  await setUserSession(event, {
-    // User data
-    user: {
-      email: user.email,
-    },
-    // Any extra fields for the session data
-    loggedInAt: new Date(),
-  })
+  await Promise.all([
+    linkUserConnection(prisma, user.id, network.ip),
+    setUserSession(event, {
+      // User data
+      user: {
+        email: user.email,
+        id: user.id,
+        picture: user.picture,
+        name: user.firstname,
+      },
+      // Any extra fields for the session data
+      loggedInAt: new Date(),
+    }),
+  ])
 
-  return null
+  setResponseStatus(event, 200)
 })
