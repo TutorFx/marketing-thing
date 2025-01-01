@@ -90,7 +90,7 @@ Eles foi na padaria e compraram pãos. Eu quiz ir também, mais fiquei em casa.
 **Pontos Chave:**
 
 - **Simplicidade:** O prompt é direto e focado em um objetivo claro.
-- **Clareza:** As instruções são detalhadas e fáceis de entender.
+- **Clareza:** As instruções devem ser fáceis de entender, mesmo para quem não tem conhecimento técnico.
 - **Objetividade:** O formato de saída é bem definido e utiliza um padrão comum (Javascript).
 - **Independência:** As sugestões são independentes umas das outras, permitindo aplicação individual.
 - **Aplicabilidade:** O prompt pode ser usado para melhorar a qualidade de textos em diversos contextos.
