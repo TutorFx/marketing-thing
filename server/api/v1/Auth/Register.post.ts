@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
       email: body.data.email,
       password: hash,
 
-      connections: defineUserConnectionsData(network.ip),
+      connection: defineConnectionData(network.ip),
     },
   })
 

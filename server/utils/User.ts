@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@prisma/client'
 
-export function defineUserConnectionsData(ip: string) {
+export function defineConnectionData(ip: string) {
   return {
     connectOrCreate: {
       where: {
@@ -19,19 +19,19 @@ export function linkUserConnection(prisma: PrismaClient, userId: string, connect
       id: userId,
     },
     data: {
-      connections: defineUserConnectionsData(connectionIp),
+      connection: defineConnectionData(connectionIp),
     },
   })
 }
 
-export function checkUserConnections(prisma: PrismaClient, userId: string) {
+export function checkUserconnection(prisma: PrismaClient, userId: string) {
   const today = new Date(new Date().toDateString())
   return prisma.user.findUnique({
     where: {
       id: userId,
     },
     select: {
-      connections: {
+      connection: {
         select: {
           ip: true,
           user: {

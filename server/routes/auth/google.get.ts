@@ -12,14 +12,14 @@ export default defineOAuthGoogleEventHandler({
         picture: user.picture,
         firstname: user.given_name,
         lastname: user.family_name,
-        connections: defineUserConnectionsData(network.ip),
+        connection: defineConnectionData(network.ip),
       },
       create: {
         email: user.email,
         picture: user.picture,
         firstname: user.given_name,
         lastname: user.family_name,
-        connections: defineUserConnectionsData(network.ip),
+        connection: defineConnectionData(network.ip),
       },
     })
     await setUserSession(event, {
