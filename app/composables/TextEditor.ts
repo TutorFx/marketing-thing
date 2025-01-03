@@ -1,5 +1,5 @@
 import type { PromptEnum } from '~~/shared/utils/internal'
-import type { IAiSugestionRequest, IAiSugestionResponse, IAiSugestionResponses } from '~~/shared/utils/schemas'
+import type { IAiSugestionResponse } from '~~/shared/utils/schemas'
 import { watchDebounced } from '@vueuse/core'
 import { diffCleanupSemantic, diffMain } from 'diff-match-patch-es'
 import { defineStore } from 'pinia'
@@ -16,6 +16,10 @@ export const useTextEditor = defineStore('text-editor', () => {
   function setText(text: string) {
     state.value = text
   }
+
+  const { $api } = useNuxtApp()
+
+  const repo = requestRepositoryV1($api)
 
   const diffData = computed(() => {
     if (isHovering.value === null)
@@ -56,14 +60,7 @@ export const useTextEditor = defineStore('text-editor', () => {
   }
 
   function fetchTips(prompt: PromptEnum) {
-    $fetch<IAiSugestionResponses>('/api/v1/Tips', {
-      method: 'POST',
-      body: {
-        redaction: state.value,
-        agent: agent.value,
-        prompt,
-      } satisfies IAiSugestionRequest,
-    })
+    repo.Tips(state.value, agent.value, prompt)
       .then((res) => {
         const localTips = res.forEach(item => tips.value.push({ ...item, initial: state.value }))
         removeImpossibleTips(state.value)
@@ -89,5 +86,15 @@ export const useTextEditor = defineStore('text-editor', () => {
     setText(state.value.replaceAll(currentTip.diff.before, currentTip.diff.after))
   }
 
-  return { state, diffData, fetchTips, applyTip, refuseTip, setText, tips, isHovering, agent }
+  return {
+    state,
+    diffData,
+    fetchTips,
+    applyTip,
+    refuseTip,
+    setText,
+    tips,
+    isHovering,
+    agent,
+  }
 })
