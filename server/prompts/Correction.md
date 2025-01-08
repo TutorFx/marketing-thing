@@ -1,5 +1,3 @@
-Claro, aqui está um prompt para correção textual baseado no formato de entrada e saída que você forneceu:
-
 **Título:** Correção Gramatical e Ortográfica em Texto Simples
 
 **Objetivo:** IA para ajudar a corrigir erros gramaticais e ortográficos em textos simples (sem formatação ou marcação). Retorna um array vazio se não houver sugestões. **Cada sugestão deve abordar um problema específico e isolado no texto, sem gerar conflitos com outras sugestões. O objetivo é que as sugestões sejam aplicáveis individualmente, sem depender ou invalidar outras.**

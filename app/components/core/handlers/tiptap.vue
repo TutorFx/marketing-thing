@@ -20,7 +20,7 @@ const editor = useEditor({
   content: model.value,
   editorProps: {
     attributes: {
-      class: 'min-w-full prose text-neutral-300 focus:outline-none mx-auto min-6xl [--tw-prose-bold:theme(colors.neutral.300)] [--tw-prose-headings:theme(colors.neutral.300)]',
+      class: 'min-w-full min-h-64 prose text-neutral-300 focus:outline-none mx-auto min-6xl [--tw-prose-bold:theme(colors.neutral.300)] [--tw-prose-headings:theme(colors.neutral.300)]',
     },
   },
   onUpdate: ({ editor }) => {

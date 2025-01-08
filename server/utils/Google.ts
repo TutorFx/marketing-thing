@@ -20,7 +20,7 @@ export const GOOGLE_SAFETY_SETTINGS = [
 ]
 
 export const GOOGLE_GENERATION_SETTINGS = {
-  temperature: 0.9,
+  temperature: 0.1,
   topK: 1,
   topP: 1,
   maxOutputTokens: 8000,

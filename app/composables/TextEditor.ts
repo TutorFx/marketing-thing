@@ -2,10 +2,13 @@ import type { PromptEnum } from '~~/shared/utils/internal'
 import type { IAiSugestionResponse } from '~~/shared/utils/schemas'
 import { watchDebounced } from '@vueuse/core'
 import { diffCleanupSemantic, diffMain } from 'diff-match-patch-es'
+import { FetchError } from 'ofetch'
 import { defineStore } from 'pinia'
 import { GoogleModelEnum } from '~~/shared/utils/internal'
 
 export const useTextEditor = defineStore('text-editor', () => {
+  const usage = ref<null | IAiUsage>(null)
+
   const defaultVal = '<p></p>'
 
   const isHovering = ref<number | null>(null)
@@ -20,6 +23,9 @@ export const useTextEditor = defineStore('text-editor', () => {
   const { $api } = useNuxtApp()
 
   const repo = requestRepositoryV1($api)
+  const router = useRouter()
+
+  const currentUsage = computed(() => usage.value ?? null)
 
   const diffData = computed(() => {
     if (isHovering.value === null)
@@ -33,17 +39,16 @@ export const useTextEditor = defineStore('text-editor', () => {
     const diff = state.value.replaceAll(currentTip.diff.before, currentTip.diff.after)
 
     const diffs = diffMain(
-      state.value, // .replace(/<[^>]*>/g, ''),
-      diff, // .replace(/<[^>]*>/g, ''),
+      state.value,
+      diff,
     )
 
-    // diffCharsToLines(diffs, lineArray)
     diffCleanupSemantic(diffs)
 
     return diffs
   })
 
-  // watch(state, () => tips.value.length = 0)
+  useAsyncData(() => repo.BudgetGet().then(usageResponse => usage.value = usageResponse))
 
   watchDebounced(
     state,
@@ -62,9 +67,17 @@ export const useTextEditor = defineStore('text-editor', () => {
   function fetchTips(prompt: PromptEnum) {
     repo.Tips(state.value, agent.value, prompt)
       .then((res) => {
-        const localTips = res.forEach(item => tips.value.push({ ...item, initial: state.value }))
+        const localTips = res.responseMessage.forEach(item => tips.value.push({ ...item, initial: state.value }))
+        usage.value = res.usage
         removeImpossibleTips(state.value)
         return localTips
+      })
+      .catch((e) => {
+        if (e instanceof FetchError) {
+          if (e.statusCode === 402) {
+            router.push({ name: 'Login' })
+          }
+        }
       })
   }
 
@@ -96,5 +109,6 @@ export const useTextEditor = defineStore('text-editor', () => {
     tips,
     isHovering,
     agent,
+    currentUsage,
   }
 })

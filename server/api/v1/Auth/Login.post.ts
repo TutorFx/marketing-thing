@@ -53,6 +53,7 @@ export default defineEventHandler(async (event) => {
         id: user.id,
         picture: user.picture,
         name: user.firstname,
+        plan: user.plan,
       },
       // Any extra fields for the session data
       loggedInAt: new Date(),

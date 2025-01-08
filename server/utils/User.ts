@@ -23,29 +23,3 @@ export function linkUserConnection(prisma: PrismaClient, userId: string, connect
     },
   })
 }
-
-export function checkUserconnection(prisma: PrismaClient, userId: string) {
-  const today = new Date(new Date().toDateString())
-  return prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-    select: {
-      connection: {
-        select: {
-          ip: true,
-          user: {
-            select: {
-              id: true,
-              budget: {
-                where: {
-                  id: today,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  })
-}

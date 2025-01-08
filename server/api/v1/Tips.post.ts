@@ -1,8 +1,25 @@
+import type { H3Error } from 'h3'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { fromZodError } from 'zod-validation-error'
 import { AiSugestionRequest } from '~~/shared/utils/schemas'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler<Promise<ITipsResponse | H3Error | void>>(async (event) => {
+  const session = await getUserSession(event)
+  const plan = getCurrentPlan(session)
+  const budget = await getCurrentBudget(event, session)
+
+  const featureFlags = FEATURE_FLAGS[plan]
+
+  if (!budget) {
+    return sendError(
+      event,
+      createError({
+        statusCode: 404,
+        statusMessage: 'error.budget.404',
+      }),
+    )
+  }
+
   const result = await readValidatedBody(event, (body) => {
     return AiSugestionRequest.safeParse(body)
   })
@@ -22,12 +39,47 @@ export default defineEventHandler(async (event) => {
     safetySettings: GOOGLE_SAFETY_SETTINGS,
   })
 
-  const response = await chat.sendMessage(result.data.redaction)
+  const isAmountAvailable = checkBudget(budget, featureFlags)
 
-  const responseMessage = makeContentJson(response.response.candidates?.at(-1)?.content.parts?.at(agent.contentIndex)?.text?.replaceAll(/\\"/g, '"') ?? '')
+  if (!isAmountAvailable) {
+    return sendError(
+      event,
+      createError({
+        statusCode: 402,
+        statusMessage: 'error.payment.402',
+      }),
+    )
+  }
 
-  if (!responseMessage)
-    return createError('Invalid Response')
+  const apiResponse = await chat.sendMessage(result.data.redaction)
+  const { candidates, usageMetadata } = apiResponse.response
 
-  return responseMessage
+  if (!usageMetadata) {
+    return sendError(
+      event,
+      createError({
+        statusCode: 402,
+        statusMessage: 'error.invalidAiMetadata.502',
+      }),
+    )
+  }
+
+  const responseMessage = makeContentJson(candidates?.at(-1)?.content.parts?.at(agent.contentIndex)?.text?.replaceAll(/\\"/g, '"') ?? '')
+
+  if (!responseMessage) {
+    return sendError(
+      event,
+      createError({
+        statusCode: 502,
+        statusMessage: 'error.invalidAiResponse.502',
+      }),
+    )
+  }
+
+  const usage = await increaseUsage(budget, usageMetadata)
+
+  return {
+    responseMessage,
+    usage,
+  }
 })

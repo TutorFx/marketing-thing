@@ -28,6 +28,7 @@ export default defineOAuthGoogleEventHandler({
         picture: user.picture,
         email: user.email,
         id: definedUser.id,
+        plan: definedUser.plan,
       },
     })
 

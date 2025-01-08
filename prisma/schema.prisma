@@ -5,44 +5,52 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  // previewFeatures = []
 }
 
 model User {
-  id          String        @id @default(cuid())
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  email       String        @unique
-  picture     String?
-  password    String?
-  firstname   String?
-  lastname    String?
-  role        Role?         @default(USER)
-  plan        Plan          @default(HOBBY)
-  connection Connection[]   @relation("userConnection")
-  budget      DailyBudget[] @relation("userBudget")
+  id         String        @id @default(cuid())
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  email      String        @unique
+  picture    String?
+  password   String?
+  firstname  String?
+  lastname   String?
+  role       Role?         @default(USER)
+  plan       Plan          @default(HOBBY)
+  connection Connection[]  @relation("userConnection")
+  budget     DailyBudget[] @relation("userBudget")
 }
 
 model Guest {
-  id         String       @id @default(cuid())
+  id String @id @default(cuid())
 
-  budget      DailyBudget[] @relation("guestBudget")
-  connection Connection[] @relation("guestConnection")
+  budget     DailyBudget[] @relation("guestBudget")
+  connection Connection[]  @relation("guestConnection")
 }
 
 model Connection {
-  ip   String @id
+  ip String @id
 
-  user User[] @relation("userConnection")
+  user  User[]  @relation("userConnection")
   guest Guest[] @relation("guestConnection")
 }
 
 model DailyBudget {
-  id          DateTime @id
-  dailyPoints Int      @default(0)
+  internalId String   @id @default(cuid())
+  id         DateTime
 
-  user User[] @relation("userBudget")
-  guest Guest[] @relation("guestBudget")
+  candidatesTokenCount Int @default(0)
+  promptTokenCount  Int @default(0)
+
+  userId  String?
+  guestId String?
+
+  user  User?  @relation("userBudget", fields: [userId], references: [id])
+  guest Guest? @relation("guestBudget", fields: [guestId], references: [id])
+
+  @@unique([id, userId])
+  @@unique([id, guestId])
 }
 
 enum Role {
