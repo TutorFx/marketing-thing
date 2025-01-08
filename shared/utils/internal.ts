@@ -1,5 +1,3 @@
-import { Plan } from '@prisma/client'
-
 export enum GoogleModelEnum {
   thinking,
   flash,
