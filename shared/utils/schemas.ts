@@ -23,9 +23,13 @@ export type IAiSugestionRequest = z.infer<typeof AiSugestionRequest>
 export type IAiSugestionResponse = z.infer<typeof AiSugestionResponse>
 export type IAiSugestionResponses = z.infer<typeof AiSugestionResponses>
 
-export interface IAiUsage {
+export interface AiTokens {
   candidatesTokenCount: number
   promptTokenCount: number
+}
+export interface IAiUsage {
+  available: IFeatureFlag
+  current: IFeatureFlag
 }
 export interface ITipsResponse {
   responseMessage: IAiSugestionResponses

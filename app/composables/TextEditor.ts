@@ -48,7 +48,11 @@ export const useTextEditor = defineStore('text-editor', () => {
     return diffs
   })
 
-  useAsyncData(() => repo.BudgetGet().then(usageResponse => usage.value = usageResponse))
+  repo.BudgetGet().then((budget) => {
+    if (budget) {
+      usage.value = budget
+    }
+  })
 
   watchDebounced(
     state,

@@ -1,12 +1,17 @@
 export default defineEventHandler<Promise<IAiUsage | null>>(async (event) => {
   const session = await getUserSession(event)
-  const budget = await getCurrentBudget(event, session)
+  const plan = getCurrentPlan(session)
+  const current = await getCurrentBudget(event, session)
 
-  if (!budget)
+  const available = FEATURE_FLAGS[plan]
+
+  if (!current)
     return null
 
   return {
-    candidatesTokenCount: budget.candidatesTokenCount,
-    promptTokenCount: budget.promptTokenCount,
+    current: {
+      tokenCount: current.candidatesTokenCount + current.promptTokenCount,
+    },
+    available,
   }
 })

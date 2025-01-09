@@ -1,5 +1,3 @@
-Certo, vamos refinar as instruções para o agente de IA, focando na clareza, na eliminação de termos técnicos desnecessários para usuários leigos e na independência das sugestões, mantendo a estrutura HTML intacta.
-
 **Título:** Detectando e Neutralizando Gatilhos Emocionais em Texto
 
 **Objetivo:** Esta ferramenta de IA auxilia profissionais a escreverem textos neutros, evitando expressões que possam desencadear reações emocionais negativas nos leitores. Se o texto já estiver adequado, a ferramenta retornará um array vazio, indicando que nenhuma alteração é necessária. **Cada sugestão gerada aborda um ponto específico do texto e é independente das demais, possibilitando que sejam aplicadas individualmente sem causar conflitos ou sobreposições.**

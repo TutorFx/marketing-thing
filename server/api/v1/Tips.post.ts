@@ -76,10 +76,17 @@ export default defineEventHandler<Promise<ITipsResponse | H3Error | void>>(async
     )
   }
 
-  const usage = await increaseUsage(budget, usageMetadata)
+  const current = await increaseUsage(budget, usageMetadata)
 
   return {
     responseMessage,
-    usage,
+    usage: {
+      current: {
+        tokenCount: current.candidatesTokenCount + current.promptTokenCount,
+      },
+      available: {
+        tokenCount: featureFlags.tokenCount,
+      },
+    },
   }
 })

@@ -51,8 +51,23 @@ onBeforeUnmount(() => {
 <template>
   <UCard :ui="{ body: 'min-h-full' }">
     <template #header>
-      <div class="grid grid-flow-col justify-start items-center">
-        <div v-if="editor" class="pr-2 flex flex-wrap gap-1 border-r border-[var(--ui-border)]">
+      <div class="grid grid-flow-col justify-start items-center gap-2">
+        <div v-if="editor" class="flex flex-wrap gap-1">
+          <UButton
+            size="xs"
+            icon="material-symbols:undo"
+            :variant="editor.can().undo() ? 'solid' : 'subtle'"
+            @click="editor.chain().focus().undo().run()"
+          />
+          <UButton
+            size="xs"
+            icon="material-symbols:redo"
+            :variant="editor.can().redo() ? 'solid' : 'subtle'"
+            @click="editor.chain().focus().redo().run()"
+          />
+        </div>
+        <USeparator orientation="vertical" />
+        <div v-if="editor" class="flex flex-wrap gap-1">
           <UButton
             size="xs"
             icon="material-symbols:format-bold-rounded"
@@ -80,7 +95,8 @@ onBeforeUnmount(() => {
             @click="editor.chain().focus().toggleHeading({ level: heading as 1 | 2 | 3 | 4 | 5 }).run()"
           />
         </div>
-        <div class="pl-2 flex flex-wrap gap-1">
+        <USeparator orientation="vertical" />
+        <div class="flex flex-wrap gap-1">
           <UButton v-for="({ icon, id, name, isPro }, i) in PROMPTS" :key="i" size="xs" :icon @click="emits('triggers', id)">
             {{ name }} <Icon v-if="isPro" name="solar:medal-ribbon-star-bold-duotone" />
           </UButton>

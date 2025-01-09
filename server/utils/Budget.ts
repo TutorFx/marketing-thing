@@ -79,12 +79,11 @@ export async function getCurrentBudget(event: H3Event, session: UserSession, per
 
 export function checkBudget(budget: Prisma.$DailyBudgetPayload['scalars'], flag: IFeatureFlag) {
   return (
-    flag.promptTokenCount > budget.promptTokenCount
-    && flag.candidatesTokenCount > budget.candidatesTokenCount
+    flag.tokenCount > budget.promptTokenCount + budget.candidatesTokenCount
   )
 }
 
-export async function increaseUsage(budget: Prisma.$DailyBudgetPayload['scalars'], usageMetadata: IFeatureFlag) {
+export async function increaseUsage(budget: Prisma.$DailyBudgetPayload['scalars'], usageMetadata: AiTokens) {
   const prisma = usePrisma()
 
   const candidatesTokenCount = budget.promptTokenCount + usageMetadata.candidatesTokenCount
