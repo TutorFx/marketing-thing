@@ -86,7 +86,7 @@ const { loggedIn } = useUserSession()
           </div>
           <div class="hidden xl:block">
             <menu class="grid grid-flow-col justify-start gap-4">
-              menu items
+              <!-- menu items -->
             </menu>
           </div>
           <div class="hidden xl:block">

@@ -29,7 +29,7 @@ const html = computed(() => {
 </script>
 
 <template>
-  <div>
+  <UCard>
     <div class="min-w-full prose text-neutral-300 focus:outline-none mx-auto min-6xl [--tw-prose-bold:theme(colors.neutral.300)] [--tw-prose-headings:theme(colors.neutral.300)]" v-html="html" />
-  </div>
+  </UCard>
 </template>

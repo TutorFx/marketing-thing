@@ -13,7 +13,7 @@ function toGoogle() {
         </h1>
         <div class="grid gap-6">
           <p class="text-xl max-w-md text-center mx-auto text-balance">
-            Escreva com clareza e confiança, detectamos e apontamos correções de erros em seu texto.
+            Escreva com clareza e confiança, detectamos e apontamos erros em seu texto.
           </p>
           <div class="grid justify-center grid-flow-col gap-3">
             <UButton icon="logos:google-icon" color="neutral" size="xl" @click="toGoogle">

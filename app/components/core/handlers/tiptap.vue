@@ -20,7 +20,7 @@ const editor = useEditor({
   content: model.value,
   editorProps: {
     attributes: {
-      class: 'min-w-full min-h-64 prose text-neutral-300 focus:outline-none mx-auto min-6xl [--tw-prose-bold:theme(colors.neutral.300)] [--tw-prose-headings:theme(colors.neutral.300)]',
+      class: 'min-w-full prose text-neutral-300 focus:outline-none mx-auto [--tw-prose-bold:theme(colors.neutral.300)] [--tw-prose-headings:theme(colors.neutral.300)]',
     },
   },
   onUpdate: ({ editor }) => {
@@ -97,10 +97,14 @@ onBeforeUnmount(() => {
         </div>
         <USeparator orientation="vertical" />
         <div class="flex flex-wrap gap-1">
-          <UButton v-for="({ icon, id, name, isPro }, i) in PROMPTS" :key="i" size="xs" :icon @click="emits('triggers', id)">
+          <UButton v-for="({ icon, id, name, isPro }, i) in PROMPTS" :key="i" size="xs" color="neutral" variant="subtle" :icon @click="emits('triggers', id)">
             {{ name }} <Icon v-if="isPro" name="solar:medal-ribbon-star-bold-duotone" />
           </UButton>
           <CoreAgentSelector v-model="agentModel" />
+        </div>
+        <USeparator orientation="vertical" />
+        <div class="flex flex-wrap gap-1">
+          <slot />
         </div>
       </div>
     </template>

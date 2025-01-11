@@ -7,7 +7,11 @@ import { defineStore } from 'pinia'
 import { GoogleModelEnum } from '~~/shared/utils/internal'
 
 export const useTextEditor = defineStore('text-editor', () => {
+  const toast = useToast()
+
   const usage = ref<null | IAiUsage>(null)
+  const displayTips = ref(false)
+  const pending = ref(false)
 
   const defaultVal = '<p></p>'
 
@@ -26,6 +30,7 @@ export const useTextEditor = defineStore('text-editor', () => {
   const router = useRouter()
 
   const currentUsage = computed(() => usage.value ?? null)
+  const isPendingRequest = computed(() => pending.value)
 
   const diffData = computed(() => {
     if (isHovering.value === null)
@@ -69,11 +74,18 @@ export const useTextEditor = defineStore('text-editor', () => {
   }
 
   function fetchTips(prompt: PromptEnum) {
+    pending.value = true
     repo.Tips(state.value, agent.value, prompt)
       .then((res) => {
         const localTips = res.responseMessage.forEach(item => tips.value.push({ ...item, initial: state.value }))
         usage.value = res.usage
         removeImpossibleTips(state.value)
+        if (tips.value.length === 0) {
+          toast.add({
+            title: 'Bom trabalho!',
+            description: 'Seu texto já está bom.',
+          })
+        }
         return localTips
       })
       .catch((e) => {
@@ -82,6 +94,9 @@ export const useTextEditor = defineStore('text-editor', () => {
             router.push({ name: 'Login' })
           }
         }
+      })
+      .finally(() => {
+        pending.value = false
       })
   }
 
@@ -103,6 +118,17 @@ export const useTextEditor = defineStore('text-editor', () => {
     setText(state.value.replaceAll(currentTip.diff.before, currentTip.diff.after))
   }
 
+  watch(() => tips.value.length, (newVal, oldVal) => {
+    if (newVal === oldVal)
+      return
+
+    if (newVal > 0)
+      displayTips.value = true
+
+    if (newVal === 0)
+      displayTips.value = false
+  })
+
   return {
     state,
     diffData,
@@ -114,5 +140,7 @@ export const useTextEditor = defineStore('text-editor', () => {
     isHovering,
     agent,
     currentUsage,
+    displayTips,
+    isPendingRequest,
   }
 })
