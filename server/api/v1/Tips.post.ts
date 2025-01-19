@@ -31,8 +31,14 @@ export default defineEventHandler<Promise<ITipsResponse | H3Error | void>>(async
   const agent = GOOGLE_MODELS[result.data.agent]
   const prompt = PROMPTS[result.data.prompt]
 
+  const systemInstruction = `
+    ${await getPromptFileData('Input')}\n
+    ${await getPromptFileData(prompt)}\n
+    ${await getPromptFileData('Output')}
+  `
+
   const genAI = new GoogleGenerativeAI(config.GEMINI_API_KEY)
-  const model = genAI.getGenerativeModel({ model: agent.name, systemInstruction: await getPromptFileData(prompt) })
+  const model = genAI.getGenerativeModel({ model: agent.name, systemInstruction })
 
   const chat = model.startChat({
     generationConfig: GOOGLE_GENERATION_SETTINGS,
