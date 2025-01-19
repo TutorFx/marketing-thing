@@ -1,10 +1,8 @@
-import type { PromptEnum } from '~~/shared/utils/internal'
 import type { IAiSugestionResponse } from '~~/shared/utils/schemas'
 import { watchDebounced } from '@vueuse/core'
 import { diffCleanupSemantic, diffMain } from 'diff-match-patch-es'
 import { FetchError } from 'ofetch'
 import { defineStore } from 'pinia'
-import { GoogleModelEnum } from '~~/shared/utils/internal'
 
 export const useTextEditor = defineStore('text-editor', () => {
   const toast = useToast()

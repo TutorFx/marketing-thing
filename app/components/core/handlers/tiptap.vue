@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { GoogleModelEnum, PromptEnum } from '~~/shared/utils/internal'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Underline } from '@tiptap/extension-underline'
 import { StarterKit } from '@tiptap/starter-kit'

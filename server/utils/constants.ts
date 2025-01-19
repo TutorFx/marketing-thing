@@ -1,5 +1,3 @@
-import { GoogleModelEnum, PromptEnum } from '../../shared/utils/internal'
-
 export const GOOGLE_MODELS = {
   [GoogleModelEnum.thinking]: {
     name: 'gemini-2.0-flash-thinking-exp-1219',

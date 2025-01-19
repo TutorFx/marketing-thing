@@ -1,5 +1,3 @@
-import { GoogleModelEnum, PromptEnum } from '../../shared/utils/internal'
-
 export const MODELS = [
   {
     name: 'Raciocínio',
