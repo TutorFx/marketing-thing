@@ -16,7 +16,7 @@ definePageMeta({
         </CoreContainer>
       </div>
       <div>
-        a
+        <!-- footer -->
       </div>
     </div>
   </div>
