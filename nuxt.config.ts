@@ -17,6 +17,13 @@ export default defineNuxtConfig({
 
   css: ['./public/tailwind.css'],
 
+  content: {
+    database: {
+      type: 'postgres',
+      url: process.env.DATABASE_URL ?? '',
+    },
+  },
+
   runtimeConfig: {
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     google: {
