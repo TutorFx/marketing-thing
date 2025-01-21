@@ -16,7 +16,8 @@
     "migrate:deploy": "bunx prisma migrate deploy --preview-feature",
     "migrate:status": "bunx prisma migrate status --preview-feature",
     "migrate:resolve": "bunx prisma migrate resolve --preview-feature",
-    "prisma:studio": "bunx prisma studio"
+    "prisma:studio": "bunx prisma studio",
+    "check": "bun run build && node --env-file=.env .output/server/index.mjs"
   },
   "dependencies": {
     "@nuxt/ui": "^3.0.0-alpha.10",
