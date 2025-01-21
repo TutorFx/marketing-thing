@@ -10,6 +10,6 @@
   - **Outros erros gramaticais:** Identificar e corrigir outros erros, como uso incorreto de tempos verbais, modos verbais, vozes verbais, etc.
 
 - **Independência das Sugestões:** Garantir que cada sugestão seja independente e resolva um único problema específico no texto. Ao identificar múltiplos problemas, as sugestões devem ser distintas e sem sobreposição ou conflito, permitindo que sejam aplicadas individualmente sem invalidar ou depender de outras.
-- **Preservação de tags HTML:** As tags HTML devem ser mantidas intactas. A análise e correção devem ignorar as tags, focando apenas no texto contido entre elas.
+- **[!]Preservação de tags HTML:** As tags HTML devem ser mantidas intactas. A análise e correção devem ignorar as tags, focando apenas no texto contido entre elas.
 - **Clareza e Precisão:** As sugestões devem ser claras, precisas e fáceis de entender, permitindo que o usuário compreenda o erro e a correção proposta.
 - **Retorno vazio:** A ausência de erros deve retornar um valor que indique que não há correções a serem feitas.

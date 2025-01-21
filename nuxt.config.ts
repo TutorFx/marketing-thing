@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/ui',
     'nuxt-auth-utils',
+    '@nuxt/content',
   ],
 
   devtools: { enabled: true },

@@ -32,9 +32,9 @@ export default defineEventHandler<Promise<ITipsResponse | H3Error | void>>(async
   const prompt = PROMPTS[result.data.prompt]
 
   const systemInstruction = `
-    ${await getPromptFileData('Input')}\n
-    ${await getPromptFileData(prompt)}\n
-    ${await getPromptFileData('Output')}
+    ${await getPromptFileData('Input', event)}\n
+    ${await getPromptFileData(prompt, event)}\n
+    ${await getPromptFileData('Output', event)}
   `
 
   const genAI = new GoogleGenerativeAI(config.GEMINI_API_KEY)

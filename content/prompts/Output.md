@@ -34,5 +34,3 @@ A ferramenta vai retornar uma lista de sugestões. Cada sugestão é como um car
 
 - **Entrada:** Texto simples ou com tags HTML (que serão mantidas).
 - **Saída:** Lista de sugestões, cada uma com título, o que mudar (before/after) e uma explicação (tip).
-
-Espero que esta versão simplificada seja mais fácil de entender. Avise-me se tiver mais dúvidas!

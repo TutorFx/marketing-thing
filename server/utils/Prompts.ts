@@ -1,20 +1,13 @@
+import type { H3Event } from 'h3'
+import fs from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 
-export function getPromptFileData(fileName: string) {
-  let prefix = 'public/prompts/'
-
-  if (process.env.dev) {
-    prefix = 'public/prompts/'
-  }
-
-  if (process.env.VERCEL_DEPLOYMENT_ID) {
-    prefix = 'prompts/'
-  }
-
-  return readFile(
-    path.join(process.cwd(), `${prefix}${fileName}.md`),
-    'utf-8',
-  )
+export function getPromptFileData(fileName: string, event: H3Event) {
+  return queryCollection(event, 'prompts')
+    .select('rawbody')
+    .where('id', '=', `prompts/prompts/${fileName}.md`)
+    .first()
+    .then(data => data.rawbody)
 }
