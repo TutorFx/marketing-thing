@@ -10,7 +10,7 @@ export function getPromptFileData(fileName: string) {
   }
 
   if (process.env.VERCEL_DEPLOYMENT_ID) {
-    prefix = './prompts/'
+    prefix = 'prompts/'
   }
 
   return readFile(
