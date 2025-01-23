@@ -1,6 +1,7 @@
 {
   "name": "nuxt-app",
   "type": "module",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "build": "bunx prisma generate && bun --bun nuxt build",
@@ -55,6 +56,5 @@
     "tailwind-variants": "^0.3.0",
     "zod": "^3.24.1",
     "zod-validation-error": "^3.4.0"
-  },
-  "version": "0.0.1"
+  }
 }

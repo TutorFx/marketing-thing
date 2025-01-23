@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const props = withDefaults(defineProps<{ popper?: 'start' | 'end' }>(), { popper: 'end' })
+
 const { user, clear } = useUserSession()
 const toast = useToast()
 
@@ -42,11 +44,11 @@ const items = [{
   <UDropdownMenu
     v-if="user"
     :items="items" :ui="{ content: 'w-48' }" :content="{
-      align: 'end',
+      align: props.popper,
       side: 'bottom',
     }"
   >
-    <div class="grid grid-flow-col items-center gap-3">
+    <div class="grid grid-flow-col items-center justify-start gap-3">
       <UAvatar
         :src="user.picture ?? undefined"
         :alt="user.name ?? undefined"
